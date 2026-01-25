@@ -5,10 +5,10 @@ param(
     
     # If there is no SSO (Single Sign-On), RoamIdentity should be set to $true to enable credential roaming
     [Parameter(Mandatory = $false)]
-    [bool] $RoamIdentity = $false,
+    [string]$RoamIdentity = '0',
     
     [Parameter(Mandatory = $false)]
-    [bool] $RoamRecycleBin = $true
+    [string]$RoamRecycleBin = '0'
 )
 
 function New-Log {
@@ -214,15 +214,15 @@ $Settings = @(
         },
         [PSCustomObject]@{
             Name         = 'RoamRecycleBin'
-            Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
+            Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
             PropertyType = 'DWord'
-            Value        = [int]$RoamRecycleBin
+            Value        = $RoamRecycleBin
         },
         [PSCustomObject]@{
             Name         = 'RoamIdentity'
-            Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
+            Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
             PropertyType = 'DWord'
-            Value        = [int]$RoamIdentity
+            Value        = $RoamIdentity
         }
     )
 
