@@ -5,10 +5,10 @@ param(
     
     # If there is no SSO (Single Sign-On), RoamIdentity should be set to $true to enable credential roaming
     [Parameter(Mandatory = $false)]
-    [string]$RoamIdentity = '0',
+    [int]$RoamIdentity = 0,
     
     [Parameter(Mandatory = $false)]
-    [string]$RoamRecycleBin = '0'
+    [int]$RoamRecycleBin = 0
 )
 
 function New-Log {
