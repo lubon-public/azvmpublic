@@ -8,7 +8,10 @@ param(
     [int]$RoamIdentity = 0,
     
     [Parameter(Mandatory = $false)]
-    [int]$RoamRecycleBin = 0
+    [int]$RoamRecycleBin = 0,
+
+    [Parameter(Mandatory = $false)]
+    [string]$AddDefenderExclusions = 'true'
 )
 
 function New-Log {
@@ -229,4 +232,36 @@ $Settings = @(
 # Apply Fslogix Settings
 foreach ($Setting in $Settings) {
     Set-RegistryValue -Name $Setting.Name -Path $Setting.Path -PropertyType $Setting.PropertyType -Value $Setting.Value -Verbose
+}
+
+# Apply Defender exclusions
+
+if ($AddDefenderExclusions -eq 'true') {
+    $Files = @(
+        "%ProgramFiles%\FSLogix\Apps\frxdrv.sys",
+        "%ProgramFiles%\FSLogix\Apps\frxdrvvt.sys",
+        "%ProgramFiles%\FSLogix\Apps\frxccd.sys",
+        "%TEMP%\*.VHD",
+        "%TEMP%\*.VHDX",
+        "%Windir%\TEMP\*.VHD",
+        "%Windir%\TEMP\*.VHDX",
+        "$FslogixFileShareName\*.VHD",
+        "$FslogixFileShareName\*.VHDX"
+    )
+
+    foreach ($File in $Files) {
+        Add-MpPreference -ExclusionPath $File
+    }
+    Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Category 'info'
+
+    $Processes = @(
+        "%ProgramFiles%\FSLogix\Apps\frxccd.exe",
+        "%ProgramFiles%\FSLogix\Apps\frxccds.exe",
+        "%ProgramFiles%\FSLogix\Apps\frxsvc.exe"
+    )
+
+    foreach ($Process in $Processes) {
+        Add-MpPreference -ExclusionProcess $Process
+    }
+    Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Category 'info'
 }
