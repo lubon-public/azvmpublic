@@ -57,25 +57,6 @@ function Write-Log {
     }
 }
 
-function Get-WebFile {
-    param(
-        [parameter(Mandatory)]
-        [string]$FileName,
-
-        [parameter(Mandatory)]
-        [string]$URL
-    )
-    $Counter = 0
-    do {
-        Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'SilentlyContinue'
-        if ($Counter -gt 0) {
-            Start-Sleep -Seconds 30
-        }
-        $Counter++
-    }
-    until((Test-Path $FileName) -or $Counter -eq 9)
-}
-
 Function Set-RegistryValue {
     [CmdletBinding()]
     param (
